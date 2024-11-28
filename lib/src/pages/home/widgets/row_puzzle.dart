@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wordle_guess/src/enum/box.dart';
 
+import '../../../constant/borders.dart';
 import '../../../constant/constant.dart';
 import '../../../model/box.dart';
 import '../../../resources/typography.dart';
@@ -38,7 +39,7 @@ class RowPuzzle extends GetView {
       width: boxWidth,
       height: boxWidth,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: WordleBorders.radiusL,
           border: Border.all(color: box.type.boxBorderColor, width: 3),
           color: box.type.boxBgColor),
       alignment: Alignment.center,

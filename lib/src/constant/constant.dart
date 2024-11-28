@@ -11,5 +11,7 @@ class WordleConstant {
     ['Z', 'X', 'C', 'V', 'B', 'N', 'M', WordleConstant.delText],
   ];
 
+  static const double borderRadius = 8;
+
   static const Duration animationDuration = Duration(milliseconds: 200);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../resources/colors.dart';
+import '../../resources/strings.dart';
 import '../../resources/typography.dart';
 import '../../widgets/padding_horizontal.dart';
 import 'controller.dart';
@@ -43,7 +44,7 @@ class HomePage extends GetView<HomeController> {
           Column(
             children: [
               Text(
-                'LEVEL',
+                WordleText.level,
                 style: WordleTypographyTheme.textStyleLight
                     .copyWith(color: WordleColors.lightPurple),
               ),
@@ -102,7 +103,7 @@ class HomePage extends GetView<HomeController> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'SUBMIT',
+                WordleText.submit,
                 style: WordleTypographyTheme.textStyleBold.copyWith(fontSize: 18),
               ),
             ),

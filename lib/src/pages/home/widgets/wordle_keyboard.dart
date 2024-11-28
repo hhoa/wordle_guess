@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../constant/borders.dart';
 import '../../../constant/constant.dart';
 import '../../../enum/box.dart';
 import '../../../resources/typography.dart';
@@ -42,32 +43,31 @@ class WordleKeyboard extends GetView<HomeController> {
   Widget _buildKey(String key, double boxWidth, double boxHeight) {
     final BoxType type = controller.getKeyType(key);
     final bool isDel = key == WordleConstant.delText;
-    return InkWell(
-      onTap: () {
-        controller.inputKey(key);
-      },
-      child: Container(
-        width: isDel ? (boxWidth * 1.6) : boxWidth,
-        height: boxHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: type.keyboardBgColor,
-          boxShadow: const [
-            BoxShadow(
-              offset: Offset(0, 6),
-              blurRadius: 8,
-              color: Colors.black45,
-            )
-          ],
+
+    return SizedBox(
+      width: isDel ? (boxWidth * 1.6) : boxWidth,
+      height: boxHeight,
+      child: ElevatedButton(
+        onPressed: () {
+          controller.inputKey(key);
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: WordleBorders.radiusL,
+          ),
         ),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(3),
-        child: Text(
-          key,
-          style: WordleTypographyTheme.textStyleSemiBold
-              .copyWith(fontSize: 16, color: type.keyboardColor),
-          textAlign: TextAlign.center,
-        ),
+        child: isDel
+            ? Icon(
+                Icons.cancel_presentation_rounded,
+                color: type.keyboardColor,
+              )
+            : Text(
+                key,
+                style: WordleTypographyTheme.textStyleSemiBold
+                    .copyWith(fontSize: 16, color: type.keyboardColor),
+                textAlign: TextAlign.center,
+              ),
       ),
     );
   }
