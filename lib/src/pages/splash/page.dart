@@ -10,7 +10,7 @@ class SplashPage extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WordleColors.bgColor,
+      backgroundColor: WordleColors.primaryColor,
       body: const Center(child: Text('W')),
     );
   }

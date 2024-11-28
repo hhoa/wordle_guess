@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' show Color;
 
 class WordleColors {
-  static Color bgColor = const Color(0xff7eb2b4);
+  static Color primaryColor = const Color(0xff7eb2b4);
   static Color white = const Color(0xffffffff);
   static Color grey = const Color(0xff6d6b76);
   static Color yellow = const Color(0xfff2c338);

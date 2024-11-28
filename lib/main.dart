@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// import 'src/data/provider/api_provider.dart';
-// import 'src/repositories/person.dart';
+import 'src/data/repositories/votee_repository_impl.dart';
 import 'src/routes/app_pages.dart';
 
 void main() {
@@ -17,11 +16,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       getPages: AppPages.pages,
       initialRoute: Routes.splash,
-      // initialBinding: BindingsBuilder(() {
-      //   Get.lazyPut<ApiProvider>(() => ApiProvider(), fenix: true);
-      //   Get.lazyPut<PersonRepository>(() => PersonRepository(Get.find()),
-      //       fenix: true);
-      // }),
+      initialBinding: BindingsBuilder(() {
+        Get.lazyPut<VoteeRepositoryImpl>(() => VoteeRepositoryImpl(),
+            fenix: true);
+      }),
     );
   }
 }

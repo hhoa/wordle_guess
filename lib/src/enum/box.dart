@@ -11,6 +11,19 @@ enum BoxType {
 }
 
 extension BoxExt on BoxType {
+  String get param {
+    switch (this) {
+      case BoxType.none:
+        return '';
+      case BoxType.notExist:
+        return 'absent';
+      case BoxType.existWithCorrectPosition:
+        return 'correct';
+      case BoxType.existWithIncorrectPosition:
+        return 'present';
+    }
+  }
+
   Color get boxBorderColor {
     switch (this) {
       case BoxType.none:

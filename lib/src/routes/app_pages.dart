@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:wordle_guess/src/pages/splash/controller.dart';
 import 'package:wordle_guess/src/pages/splash/page.dart';
 
+import '../data/repositories/votee_repository_impl.dart';
+import '../domain/usecases/guess_usecase.dart';
 import '../pages/home/controller.dart';
 import '../pages/home/page.dart';
 
@@ -27,7 +29,13 @@ abstract class AppPages {
       page: () => const HomePage(),
       bindings: <BindingsBuilder>[
         BindingsBuilder(
-          () => Get.put<HomeController>(HomeController()),
+          () => Get.put<GetGuessUsecase>(
+              GetGuessUsecase(Get.find<VoteeRepositoryImpl>())),
+        ),
+        BindingsBuilder(
+          () => Get.put<HomeController>(HomeController(
+            Get.find<GetGuessUsecase>(),
+          )),
         ),
       ],
     ),

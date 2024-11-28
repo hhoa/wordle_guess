@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle_guess/src/pages/home/widgets/submit_button.dart';
 
+import '../../enum/button.dart';
 import '../../resources/colors.dart';
 import '../../resources/strings.dart';
 import '../../resources/typography.dart';
 import '../../widgets/padding_horizontal.dart';
 import 'controller.dart';
-import 'widgets/row_puzzle.dart';
-import 'widgets/wordle_keyboard.dart';
+import '../../widgets/row_puzzle.dart';
+import '../../widgets/wordle_keyboard.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -15,7 +17,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WordleColors.bgColor,
+      backgroundColor: WordleColors.primaryColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -24,7 +26,7 @@ class HomePage extends GetView<HomeController> {
             _buildSpacing(),
             _buildPuzzle(),
             _buildSpacing(),
-            const WordleKeyboard(),
+            _buildKeyboard(),
             _buildSpacing(),
             _buildButtons(),
           ],
@@ -88,26 +90,24 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
+  Widget _buildKeyboard() {
+    return Obx(
+      () => WordleKeyboard(
+        keyboardMap: controller.keyboardMap,
+        onPressed: controller.submitButtonType == ButtonType.loading
+            ? null
+            : controller.inputKey,
+      ),
+    );
+  }
+
   Widget _buildButtons() {
     return HorizontalPadding(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(width: 56),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: WordleColors.blue,
-            ),
-
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                WordleText.submit,
-                style: WordleTypographyTheme.textStyleBold.copyWith(fontSize: 18),
-              ),
-            ),
-          ),
+          const SubmitButton(),
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(

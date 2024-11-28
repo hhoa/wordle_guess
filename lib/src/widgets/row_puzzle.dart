@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wordle_guess/src/enum/box.dart';
 
-import '../../../constant/borders.dart';
-import '../../../constant/constant.dart';
-import '../../../model/box.dart';
-import '../../../resources/typography.dart';
+import '../constant/borders.dart';
+import '../constant/constant.dart';
+import '../model/box.dart';
+import '../resources/typography.dart';
 
 class RowPuzzle extends GetView {
   const RowPuzzle({

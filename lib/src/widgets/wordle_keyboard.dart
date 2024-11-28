@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../constant/borders.dart';
-import '../../../constant/constant.dart';
-import '../../../enum/box.dart';
-import '../../../resources/typography.dart';
-import '../../../utils/common.dart';
-import '../controller.dart';
+import '../constant/borders.dart';
+import '../constant/constant.dart';
+import '../enum/box.dart';
+import '../resources/typography.dart';
+import '../utils/common.dart';
 
-class WordleKeyboard extends GetView<HomeController> {
-  const WordleKeyboard({super.key});
+class WordleKeyboard extends GetView {
+  const WordleKeyboard({
+    required this.keyboardMap,
+    required this.onPressed,
+    super.key,
+  });
 
+  final Map<String, BoxType> keyboardMap;
+  final Function(String key)? onPressed;
   final double spacer = 2;
 
   @override
@@ -40,8 +45,16 @@ class WordleKeyboard extends GetView<HomeController> {
     );
   }
 
+  BoxType getKeyboardType(String key) {
+    BoxType type = BoxType.none;
+    if (keyboardMap.containsKey(key)) {
+      type = keyboardMap[key]!;
+    }
+    return type;
+  }
+
   Widget _buildKey(String key, double boxWidth, double boxHeight) {
-    final BoxType type = controller.getKeyType(key);
+    BoxType type = getKeyboardType(key);
     final bool isDel = key == WordleConstant.delText;
 
     return SizedBox(
@@ -49,13 +62,16 @@ class WordleKeyboard extends GetView<HomeController> {
       height: boxHeight,
       child: ElevatedButton(
         onPressed: () {
-          controller.inputKey(key);
+          if (onPressed != null) {
+            onPressed!(key);
+          }
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: WordleBorders.radiusL,
           ),
+          backgroundColor: type.keyboardBgColor,
         ),
         child: isDel
             ? Icon(
