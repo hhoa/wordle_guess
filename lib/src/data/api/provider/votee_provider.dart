@@ -2,7 +2,7 @@ import 'package:get/get_connect.dart';
 
 import '../bean/guess/request_bean.dart';
 import '../bean/guess/response_bean.dart';
-import '../service/api_service.dart';
+import '../../services/api/api_service.dart';
 
 class VoteeProvider {
   VoteeProvider() : _voteeService = VoteeService();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle_guess/src/data/services/bot/gemini_service.dart';
 
+import 'src/data/repositories/gemini_repository_impl.dart';
 import 'src/data/repositories/votee_repository_impl.dart';
 import 'src/routes/app_pages.dart';
 
@@ -18,6 +20,9 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.splash,
       initialBinding: BindingsBuilder(() {
         Get.lazyPut<VoteeRepositoryImpl>(() => VoteeRepositoryImpl(),
+            fenix: true);
+        Get.lazyPut<GeminiService>(() => GeminiService(), fenix: true);
+        Get.lazyPut<GeminiRepositoryImpl>(() => GeminiRepositoryImpl(),
             fenix: true);
       }),
     );

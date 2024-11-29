@@ -14,26 +14,24 @@ class SubmitButton extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () {
-        return ElevatedButton(
-          onPressed: controller.submitButtonType == ButtonType.enabled
-              ? controller.onSubmitted
-              : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: WordleColors.blue,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: controller.submitButtonType == ButtonType.loading
-                ? const WordleCircularLoading()
-                : Text(
-                    WordleText.submit,
-                    style: WordleTypographyTheme.textStyleBold
-                        .copyWith(fontSize: 18),
-                  ),
-          ),
-        );
-      },
+      () => ElevatedButton(
+        onPressed: controller.submitButtonType == ButtonType.enabled
+            ? controller.onSubmitted
+            : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: WordleColors.blue,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: controller.submitButtonType == ButtonType.loading
+              ? const WordleCircularLoading()
+              : Text(
+                  WordleText.submit,
+                  style: WordleTypographyTheme.textStyleBold
+                      .copyWith(fontSize: 18),
+                ),
+        ),
+      ),
     );
   }
 }

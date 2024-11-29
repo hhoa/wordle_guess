@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../constant/borders.dart';
 import '../constant/constant.dart';
 import '../enum/box.dart';
+import '../model/box.dart';
 import '../resources/typography.dart';
 import '../utils/common.dart';
 
@@ -14,7 +15,7 @@ class WordleKeyboard extends GetView {
     super.key,
   });
 
-  final Map<String, BoxType> keyboardMap;
+  final Map<String, Boxes> keyboardMap;
   final Function(String key)? onPressed;
   final double spacer = 2;
 
@@ -48,7 +49,7 @@ class WordleKeyboard extends GetView {
   BoxType getKeyboardType(String key) {
     BoxType type = BoxType.none;
     if (keyboardMap.containsKey(key)) {
-      type = keyboardMap[key]!;
+      type = keyboardMap[key]!.first.type;
     }
     return type;
   }

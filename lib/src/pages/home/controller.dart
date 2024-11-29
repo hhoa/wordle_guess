@@ -4,18 +4,23 @@ import 'package:get/get.dart';
 import 'package:wordle_guess/src/constant/constant.dart';
 
 import '../../domain/entities/guess/guess.dart';
-import '../../domain/usecases/guess_usecase.dart';
+import '../../domain/usecases/bot_guess_usecase.dart';
+import '../../domain/usecases/get_guess_usecase.dart';
 import '../../enum/box.dart';
 import '../../enum/button.dart';
 import '../../model/box.dart';
 
 class HomeController extends GetxController {
-  HomeController(this.getGuessUsecase);
+  HomeController(
+    this.getGuessUsecase,
+    this.botGuessUsecase,
+  );
 
   final GetGuessUsecase getGuessUsecase;
+  final BotGuessUsecase botGuessUsecase;
 
   int level = 1;
-  RxMap<String, BoxType> keyboardMap = RxMap();
+  RxMap<String, Boxes> keyboardMap = RxMap();
 
   RxList<Boxes> listBoxes = RxList();
 
@@ -37,14 +42,6 @@ class HomeController extends GetxController {
   void addDefaultRowBoxes() {
     listBoxes.add(List<Box>.generate(
         WordleConstant.numberOfBox, (_) => Box(type: BoxType.none)).toList());
-  }
-
-  BoxType getKeyType(String key) {
-    if (keyboardMap.containsKey(key)) {
-      return keyboardMap[key]!;
-    }
-
-    return BoxType.none;
   }
 
   void inputKey(String key) {
@@ -86,27 +83,36 @@ class HomeController extends GetxController {
         final GuessResponse result = results[i];
         final String guess = result.guess.toUpperCase();
         final BoxType type = result.type;
+        final int slot = result.slot;
         if (guess == latestBoxes[i].char) {
-          listBoxes[puzzleCount - 1][i] = Box(char: guess, type: type);
+          final Box newBox = Box(char: guess, type: type, slot: slot);
+          listBoxes[puzzleCount - 1][i] = newBox;
+
           if (keyboardMap.containsKey(guess)) {
-            final BoxType currentType = keyboardMap[guess]!;
-            if (type != BoxType.none &&
-                type != BoxType.notExist &&
-                currentType != BoxType.existWithCorrectPosition) {
-              keyboardMap[guess] = type;
-              keyboardMap.refresh();
+            final BoxType currentType = keyboardMap[guess]!.first.type;
+            if (type == BoxType.existWithIncorrectPosition) {
+              if (currentType == BoxType.existWithIncorrectPosition) {
+                keyboardMap[guess]!.add(newBox);
+              }
+            } else if (type == BoxType.existWithCorrectPosition) {
+              if (currentType == BoxType.existWithCorrectPosition) {
+                keyboardMap[guess]!.add(newBox);
+              } else {
+                keyboardMap[guess] = [newBox];
+              }
             }
           } else {
-            keyboardMap[guess] = type;
-            keyboardMap.refresh();
+            keyboardMap[guess] = [newBox];
           }
+          keyboardMap.refresh();
         }
       }
 
       _submitButtonType.value = ButtonType.disabled;
       final int successfulBoxes = latestBoxes
           .where((box) => box.type == BoxType.existWithCorrectPosition)
-          .toList().length;
+          .toList()
+          .length;
       if (successfulBoxes == WordleConstant.numberOfBox) {
         // success
       } else {
@@ -114,6 +120,27 @@ class HomeController extends GetxController {
       }
       listBoxes.refresh();
     } catch (e) {
+      _submitButtonType.value = ButtonType.disabled;
+    }
+  }
+
+  void onBotGuess() async {
+    if (submitButtonType == ButtonType.loading) {
+      return;
+    }
+
+    _submitButtonType.value = ButtonType.loading;
+    final String? botGuessResult = await botGuessUsecase.takeGuess(keyMap: keyboardMap);
+    final String? formattedResult = botGuessResult?.trim().toUpperCase();
+    if (formattedResult != null &&
+        formattedResult.length == WordleConstant.numberOfBox) {
+      final List<String> guessChars = formattedResult.split('');
+      listBoxes[puzzleCount - 1] =
+          guessChars.map((char) => Box(char: char)).toList();
+      listBoxes.refresh();
+      onSubmitted();
+    } else {
+      // show error
       _submitButtonType.value = ButtonType.disabled;
     }
   }

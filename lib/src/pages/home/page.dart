@@ -108,18 +108,26 @@ class HomePage extends GetView<HomeController> {
         children: [
           const SizedBox(width: 56),
           const SubmitButton(),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: WordleColors.lightGreen,
-            ),
-            child: Icon(
-              Icons.fast_forward_rounded,
-              color: WordleColors.white,
-              size: 30,
-            ),
-          ),
+          _buildBotGuessButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBotGuessButton() {
+    return Obx(
+      () => ElevatedButton(
+        onPressed: controller.submitButtonType == ButtonType.loading
+            ? null
+            : controller.onBotGuess,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: WordleColors.lightGreen,
+        ),
+        child: Icon(
+          Icons.fast_forward_rounded,
+          color: WordleColors.white,
+          size: 30,
+        ),
       ),
     );
   }

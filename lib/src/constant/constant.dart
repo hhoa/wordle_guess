@@ -14,4 +14,6 @@ class WordleConstant {
   static const double borderRadius = 8;
 
   static const Duration animationDuration = Duration(milliseconds: 200);
+
+  static const String geminiModel = 'gemini-1.5-flash';
 }
