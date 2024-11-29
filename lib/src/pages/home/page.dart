@@ -80,15 +80,24 @@ class HomePage extends GetView<HomeController> {
   Widget _buildPuzzle() {
     return Expanded(
       child: Obx(
-        () => ListView.separated(
+        () => AnimatedList.separated(
+          key: controller.listPuzzleKey,
+          controller: controller.scrollController,
           physics: const ClampingScrollPhysics(),
-          itemBuilder: (_, int index) {
-            return RowPuzzle(
-              boxes: controller.listBoxes[index],
+          itemBuilder: (_, int index, animation) {
+            return SlideTransition(
+              position: animation.drive(Tween<Offset>(
+                begin: const Offset(0, -1), // Slide in from the left
+                end: Offset.zero,
+              ).chain(CurveTween(curve: Curves.easeIn))),
+              child: RowPuzzle(
+                boxes: controller.listBoxes[index],
+              ),
             );
           },
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemCount: controller.puzzleCount,
+          separatorBuilder: (_, __, ___) => const SizedBox(height: 8),
+          initialItemCount: controller.puzzleCount,
+          removedSeparatorBuilder: (_, __, ___) => const SizedBox(height: 8),
         ),
       ),
     );

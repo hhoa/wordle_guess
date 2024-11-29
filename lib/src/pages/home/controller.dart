@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wordle_guess/src/constant/constant.dart';
@@ -39,6 +40,10 @@ class HomeController extends GetxController {
 
   final Rx<ButtonType> _submitButtonType = ButtonType.disabled.obs;
 
+  GlobalKey<AnimatedListState> listPuzzleKey = GlobalKey<AnimatedListState>();
+
+  final ScrollController scrollController = ScrollController();
+
   ButtonType get submitButtonType => _submitButtonType.value;
 
   @override
@@ -52,6 +57,13 @@ class HomeController extends GetxController {
   void addDefaultRowBoxes() {
     listBoxes.add(List<Box>.generate(
         WordleConstant.numberOfBox, (_) => Box(type: BoxType.none)).toList());
+    listPuzzleKey.currentState?.insertItem(puzzleCount - 1);
+    if (scrollController.hasClients) {
+      Future.delayed(WordleConstant.animationDuration, () {
+        scrollController.animateTo(scrollController.position.maxScrollExtent,
+            duration: WordleConstant.animationDuration, curve: Curves.linear);
+      });
+    }
   }
 
   @override
@@ -113,11 +125,19 @@ class HomeController extends GetxController {
             final BoxType currentType = keyboardMap[guess]!.first.type;
             if (type == BoxType.existWithIncorrectPosition) {
               if (currentType == BoxType.existWithIncorrectPosition) {
-                keyboardMap[guess]!.add(newBox);
+                final List<int?> currentSlots =
+                    keyboardMap[guess]!.map((map) => map.slot).toList();
+                if (!currentSlots.contains(slot)) {
+                  keyboardMap[guess]!.add(newBox);
+                }
               }
             } else if (type == BoxType.existWithCorrectPosition) {
               if (currentType == BoxType.existWithCorrectPosition) {
-                keyboardMap[guess]!.add(newBox);
+                final List<int?> currentSlots =
+                    keyboardMap[guess]!.map((map) => map.slot).toList();
+                if (!currentSlots.contains(slot)) {
+                  keyboardMap[guess]!.add(newBox);
+                }
               } else {
                 keyboardMap[guess] = [newBox];
               }
@@ -143,13 +163,13 @@ class HomeController extends GetxController {
               keyboardMap.clear();
               keyboardMap.refresh();
               listBoxes.clear();
+              listPuzzleKey.currentState!
+                  .removeAllItems((_, __) => const SizedBox());
               addDefaultRowBoxes();
-              listBoxes.refresh();
               Get.back();
             });
       } else {
         addDefaultRowBoxes();
-        listBoxes.refresh();
       }
     } catch (e) {
       _submitButtonType.value = ButtonType.disabled;

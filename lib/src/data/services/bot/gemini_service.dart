@@ -30,33 +30,39 @@ class GeminiService extends BotService {
     if (correct.isNotEmpty || present.isNotEmpty || absent.isNotEmpty) {
       conditionPrompt += ' where: ';
       if (correct.isNotEmpty) {
-        conditionPrompt += correct.map<String>((box) {
-          final int? slot = box.slot;
-          final String? char = box.char;
-          if (slot == null || char == null) {
-            return '';
-          }
+        conditionPrompt += correct
+            .map<String>((box) {
+              final int? slot = box.slot;
+              final String? char = box.char;
+              if (slot == null || char == null) {
+                return '';
+              }
 
-          return '$char is the ${(slot + 1).toOrdinalNumber} letter';
-        }).toList().join(', ');
+              return '$char is the ${(slot + 1).toOrdinalNumber} letter';
+            })
+            .toList()
+            .join(', ');
+        conditionPrompt += '. ';
       }
 
       if (present.isNotEmpty) {
-        conditionPrompt += '${present.join(', ')} are in word';
+        conditionPrompt += '${present.join(', ')} are in word. ';
       }
 
       if (absent.isNotEmpty) {
-        conditionPrompt += '${absent.join(', ')} are NOT in word';
+        conditionPrompt += '${absent.join(', ')} are NOT in word. ';
       }
+    } else {
+      conditionPrompt += '. ';
     }
-    conditionPrompt += '. ';
 
     const String wordOnlyPrompt =
         'Return the word only. No need explanation or anything else';
     final String prompt = suggestPrompt + conditionPrompt + wordOnlyPrompt;
 
-    final GenerateContentResponse response =
-        await genModel.generateContent([Content.text(prompt)]);
+    final GenerateContentResponse response = await genModel.generateContent(
+        [Content.text(prompt)],
+        generationConfig: GenerationConfig(temperature: 1));
     return response.text;
   }
 }
