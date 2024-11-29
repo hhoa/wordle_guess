@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wordle_guess/src/pages/home/widgets/submit_button.dart';
+import 'package:wordle_guess/src/utils/dialog.dart';
 
 import '../../enum/button.dart';
 import '../../resources/colors.dart';
@@ -10,6 +11,7 @@ import '../../widgets/padding_horizontal.dart';
 import 'controller.dart';
 import '../../widgets/row_puzzle.dart';
 import '../../widgets/wordle_keyboard.dart';
+import 'wordle_button.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -50,17 +52,19 @@ class HomePage extends GetView<HomeController> {
                 style: WordleTypographyTheme.textStyleLight
                     .copyWith(color: WordleColors.lightPurple),
               ),
-              Text(
-                '1',
-                style: WordleTypographyTheme.textStyleBold.copyWith(
-                  fontSize: 20,
-                  color: WordleColors.lightPurple,
+              Obx(
+                () => Text(
+                  '${controller.level}',
+                  style: WordleTypographyTheme.textStyleBold.copyWith(
+                    fontSize: 20,
+                    color: WordleColors.lightPurple,
+                  ),
                 ),
               ),
             ],
           ),
           InkWell(
-            onTap: () {},
+            onTap: WordleDialog.showTutorial,
             borderRadius: BorderRadius.circular(60),
             child: Icon(
               Icons.info_outline,
@@ -93,6 +97,7 @@ class HomePage extends GetView<HomeController> {
   Widget _buildKeyboard() {
     return Obx(
       () => WordleKeyboard(
+        key: ValueKey(controller.keyboardMap.keys.length),
         keyboardMap: controller.keyboardMap,
         onPressed: controller.submitButtonType == ButtonType.loading
             ? null
@@ -116,13 +121,10 @@ class HomePage extends GetView<HomeController> {
 
   Widget _buildBotGuessButton() {
     return Obx(
-      () => ElevatedButton(
+      () => WordleButton(
         onPressed: controller.submitButtonType == ButtonType.loading
             ? null
             : controller.onBotGuess,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: WordleColors.lightGreen,
-        ),
         child: Icon(
           Icons.fast_forward_rounded,
           color: WordleColors.white,

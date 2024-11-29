@@ -10,5 +10,6 @@ class WordleColors {
   static Color lightPurple = const Color(0xff4a425e);
   static Color purple = const Color(0xff4c445f);
   static Color blue = const Color(0xff5f8fec);
+  static Color deepBlue = const Color(0xff1d424d);
   static Color shadow = const Color(0xffb2adc0);
 }

@@ -1,7 +1,11 @@
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:wordle_guess/src/constant/constant.dart';
+import 'package:wordle_guess/src/constant/keys.dart';
+import 'package:wordle_guess/src/resources/strings.dart';
+import 'package:wordle_guess/src/utils/dialog.dart';
 
 import '../../domain/entities/guess/guess.dart';
 import '../../domain/usecases/bot_guess_usecase.dart';
@@ -19,8 +23,13 @@ class HomeController extends GetxController {
   final GetGuessUsecase getGuessUsecase;
   final BotGuessUsecase botGuessUsecase;
 
-  int level = 1;
-  RxMap<String, Boxes> keyboardMap = RxMap();
+  final GetStorage storage = GetStorage();
+
+  final RxInt _level = 1.obs;
+
+  int get level => _level.value;
+
+  RxMap<String, Boxes> keyboardMap = RxMap<String, Boxes>();
 
   RxList<Boxes> listBoxes = RxList();
 
@@ -36,12 +45,24 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
 
+    _level.value = storage.read<int>(WordleKeys.appLatestLevel) ?? 1;
     addDefaultRowBoxes();
   }
 
   void addDefaultRowBoxes() {
     listBoxes.add(List<Box>.generate(
         WordleConstant.numberOfBox, (_) => Box(type: BoxType.none)).toList());
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+
+    final firstTimeTutorial =
+        storage.read<bool>(WordleKeys.showFirstTimeTutorial) ?? false;
+    if (!firstTimeTutorial) {
+      WordleDialog.showTutorial();
+    }
   }
 
   void inputKey(String key) {
@@ -77,7 +98,7 @@ class HomeController extends GetxController {
     final String guess = latestBoxes.map((box) => box.char!).join();
     try {
       final List<GuessResponse> results = await getGuessUsecase.guessRandom(
-          guess: guess, size: WordleConstant.numberOfBox, seed: level);
+          guess: guess, size: WordleConstant.numberOfBox, seed: _level.value);
       final int minLength = min(results.length, WordleConstant.numberOfBox);
       for (int i = 0; i < minLength; i++) {
         final GuessResponse result = results[i];
@@ -114,13 +135,25 @@ class HomeController extends GetxController {
           .toList()
           .length;
       if (successfulBoxes == WordleConstant.numberOfBox) {
-        // success
+        WordleDialog.showSuccessDialog(
+            correctWord: latestBoxes,
+            onNext: () {
+              _level.value = _level.value + 1;
+              storage.write(WordleKeys.appLatestLevel, level);
+              keyboardMap.clear();
+              keyboardMap.refresh();
+              listBoxes.clear();
+              addDefaultRowBoxes();
+              listBoxes.refresh();
+              Get.back();
+            });
       } else {
         addDefaultRowBoxes();
+        listBoxes.refresh();
       }
-      listBoxes.refresh();
     } catch (e) {
       _submitButtonType.value = ButtonType.disabled;
+      WordleDialog.showError(e.toString());
     }
   }
 
@@ -130,7 +163,8 @@ class HomeController extends GetxController {
     }
 
     _submitButtonType.value = ButtonType.loading;
-    final String? botGuessResult = await botGuessUsecase.takeGuess(keyMap: keyboardMap);
+    final String? botGuessResult =
+        await botGuessUsecase.takeGuess(keyMap: keyboardMap);
     final String? formattedResult = botGuessResult?.trim().toUpperCase();
     if (formattedResult != null &&
         formattedResult.length == WordleConstant.numberOfBox) {
@@ -140,8 +174,8 @@ class HomeController extends GetxController {
       listBoxes.refresh();
       onSubmitted();
     } else {
-      // show error
       _submitButtonType.value = ButtonType.disabled;
+      WordleDialog.showError(WordleText.botHasError);
     }
   }
 }

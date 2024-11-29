@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:wordle_guess/src/data/services/bot/gemini_service.dart';
 
 import 'src/data/repositories/gemini_repository_impl.dart';
 import 'src/data/repositories/votee_repository_impl.dart';
 import 'src/routes/app_pages.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 

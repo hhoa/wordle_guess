@@ -1,37 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wordle_guess/src/enum/button.dart';
-import 'package:wordle_guess/src/pages/home/controller.dart';
 
+import '../../../enum/button.dart';
 import '../../../resources/colors.dart';
 import '../../../resources/strings.dart';
-import '../../../resources/typography.dart';
 import '../../../widgets/circular_loading.dart';
+import '../controller.dart';
+import '../wordle_button.dart';
 
 class SubmitButton extends GetView<HomeController> {
   const SubmitButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => ElevatedButton(
-        onPressed: controller.submitButtonType == ButtonType.enabled
-            ? controller.onSubmitted
-            : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: WordleColors.blue,
+    return Obx(() {
+      final bool isLoading = controller.submitButtonType == ButtonType.loading;
+
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 156,
+          minHeight: 58,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: controller.submitButtonType == ButtonType.loading
-              ? const WordleCircularLoading()
-              : Text(
-                  WordleText.submit,
-                  style: WordleTypographyTheme.textStyleBold
-                      .copyWith(fontSize: 18),
-                ),
+        child: WordleButton(
+          title: isLoading ? null : WordleText.submit,
+          onPressed: controller.submitButtonType == ButtonType.enabled
+              ? controller.onSubmitted
+              : null,
+          bgColor: WordleColors.blue,
+          child: isLoading ? const WordleCircularLoading() : null,
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -1,7 +1,19 @@
+import 'package:wordle_guess/src/model/splash.dart';
+import 'package:wordle_guess/src/resources/colors.dart';
+
 class WordleConstant {
+  static final List<SplashChar> splashChars = [
+    SplashChar(char: 'W', color: WordleColors.purple),
+    SplashChar(char: 'O', color: WordleColors.green),
+    SplashChar(char: 'R', color: WordleColors.blue),
+    SplashChar(char: 'D', color: WordleColors.yellow),
+    SplashChar(char: 'L', color: WordleColors.lightPurple),
+    SplashChar(char: 'E', color: WordleColors.shadow),
+  ];
+
   static const int numberOfBox = 5;
 
-  static const int horizontalPuzzlePadding = 60;
+  static const double horizontalPuzzlePadding = 60;
 
   static const String delText = 'DEL';
 
