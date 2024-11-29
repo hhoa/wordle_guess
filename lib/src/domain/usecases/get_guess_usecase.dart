@@ -8,7 +8,7 @@ class GetGuessUsecase {
 
   final VoteeRepository _voteeRepository;
 
-  Future<List<GuessResponse>> guessRandom({
+  Future<List<GuessResponse>> run({
     required String guess,
     required int size,
     required int seed,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle_guess/src/enum/widget_keys.dart';
 
 import '../constant/borders.dart';
 import '../constant/constant.dart';
@@ -62,6 +63,7 @@ class WordleKeyboard extends GetView {
       width: isDel ? (boxWidth * 1.6) : boxWidth,
       height: boxHeight,
       child: ElevatedButton(
+        key: Key('${WidgetKeys.keyboardButton.name}-$key'),
         onPressed: () {
           if (onPressed != null) {
             onPressed!(key);

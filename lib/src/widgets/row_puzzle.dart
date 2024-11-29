@@ -12,8 +12,6 @@ class RowPuzzle extends GetView {
 
   final List<Box> boxes;
 
-  int get numberOfBox => boxes.length;
-
   @override
   Widget build(BuildContext context) {
     const double horizontalSpacer = 8;

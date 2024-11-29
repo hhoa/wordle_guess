@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../enum/button.dart';
+import '../../../enum/widget_keys.dart';
 import '../../../resources/colors.dart';
 import '../../../resources/strings.dart';
 import '../../../widgets/circular_loading.dart';
 import '../controller.dart';
-import '../wordle_button.dart';
+import '../../../widgets/wordle_button.dart';
 
 class SubmitButton extends GetView<HomeController> {
   const SubmitButton({super.key});
@@ -22,6 +23,7 @@ class SubmitButton extends GetView<HomeController> {
           minHeight: 58,
         ),
         child: WordleButton(
+          key: Key(WidgetKeys.submitButton.name),
           title: isLoading ? null : WordleText.submit,
           onPressed: controller.submitButtonType == ButtonType.enabled
               ? controller.onSubmitted

@@ -14,4 +14,12 @@ class GuessRequestBean {
         'size': size,
         'seed': seed,
       };
+
+  factory GuessRequestBean.fromJson(Map<String, dynamic> json) {
+    return GuessRequestBean(
+      guess: json['guess'] as String,
+      size: json['size'] as int,
+      seed: json['seed'] as int,
+    );
+  }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../resources/colors.dart';
-import '../../resources/typography.dart';
+import '../resources/colors.dart';
+import '../resources/typography.dart';
 
 class WordleButton extends GetView {
   const WordleButton({

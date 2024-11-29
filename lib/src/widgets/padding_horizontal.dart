@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../constant/constant.dart';
 
-class HorizontalPadding extends StatelessWidget {
-  const HorizontalPadding({required this.child, super.key});
+class WordleHorizontalPadding extends StatelessWidget {
+  const WordleHorizontalPadding({required this.child, super.key});
 
   final Widget child;
 

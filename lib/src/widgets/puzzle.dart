@@ -33,7 +33,7 @@ class Puzzle extends GetView {
       child: AnimatedCrossFade(
         firstChild: const SizedBox(),
         secondChild: Text(
-          box.char ?? '',
+          box.char?.toUpperCase() ?? '',
           style: WordleTypographyTheme.textStyleBold.copyWith(fontSize: 18),
           textAlign: TextAlign.center,
         ),

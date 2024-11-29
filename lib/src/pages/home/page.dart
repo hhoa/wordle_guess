@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle_guess/src/enum/widget_keys.dart';
 import 'package:wordle_guess/src/pages/home/widgets/submit_button.dart';
 import 'package:wordle_guess/src/utils/dialog.dart';
 
@@ -11,7 +12,7 @@ import '../../widgets/padding_horizontal.dart';
 import 'controller.dart';
 import '../../widgets/row_puzzle.dart';
 import '../../widgets/wordle_keyboard.dart';
-import 'wordle_button.dart';
+import '../../widgets/wordle_button.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -40,7 +41,7 @@ class HomePage extends GetView<HomeController> {
   Widget _buildSpacing() => const SizedBox(height: 20);
 
   Widget _buildHeader() {
-    return HorizontalPadding(
+    return WordleHorizontalPadding(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -54,6 +55,7 @@ class HomePage extends GetView<HomeController> {
               ),
               Obx(
                 () => Text(
+                  key: Key(WidgetKeys.levelText.name),
                   '${controller.level}',
                   style: WordleTypographyTheme.textStyleBold.copyWith(
                     fontSize: 20,
@@ -116,7 +118,7 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _buildButtons() {
-    return HorizontalPadding(
+    return WordleHorizontalPadding(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

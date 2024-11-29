@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wordle_guess/src/constant/constant.dart';
-import 'package:wordle_guess/src/constant/keys.dart';
+import 'package:wordle_guess/src/constant/preference_keys.dart';
 import 'package:wordle_guess/src/resources/strings.dart';
 import 'package:wordle_guess/src/utils/dialog.dart';
 
@@ -50,7 +50,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
 
-    _level.value = storage.read<int>(WordleKeys.appLatestLevel) ?? 1;
+    _level.value = storage.read<int>(WordlePreferenceKeys.appLatestLevel) ?? 1;
     addDefaultRowBoxes();
   }
 
@@ -71,7 +71,7 @@ class HomeController extends GetxController {
     super.onReady();
 
     final firstTimeTutorial =
-        storage.read<bool>(WordleKeys.showFirstTimeTutorial) ?? false;
+        storage.read<bool>(WordlePreferenceKeys.showFirstTimeTutorial) ?? false;
     if (!firstTimeTutorial) {
       WordleDialog.showTutorial();
     }
@@ -109,7 +109,7 @@ class HomeController extends GetxController {
     _submitButtonType.value = ButtonType.loading;
     final String guess = latestBoxes.map((box) => box.char!).join();
     try {
-      final List<GuessResponse> results = await getGuessUsecase.guessRandom(
+      final List<GuessResponse> results = await getGuessUsecase.run(
           guess: guess, size: WordleConstant.numberOfBox, seed: _level.value);
       final int minLength = min(results.length, WordleConstant.numberOfBox);
       for (int i = 0; i < minLength; i++) {
@@ -118,7 +118,7 @@ class HomeController extends GetxController {
         final BoxType type = result.type;
         final int slot = result.slot;
         if (guess == latestBoxes[i].char) {
-          final Box newBox = Box(char: guess, type: type, slot: slot);
+          final Box newBox = Box.fromSource(result);
           listBoxes[puzzleCount - 1][i] = newBox;
 
           if (keyboardMap.containsKey(guess)) {
@@ -159,7 +159,7 @@ class HomeController extends GetxController {
             correctWord: latestBoxes,
             onNext: () {
               _level.value = _level.value + 1;
-              storage.write(WordleKeys.appLatestLevel, level);
+              storage.write(WordlePreferenceKeys.appLatestLevel, level);
               keyboardMap.clear();
               keyboardMap.refresh();
               listBoxes.clear();
@@ -184,11 +184,10 @@ class HomeController extends GetxController {
 
     _submitButtonType.value = ButtonType.loading;
     final String? botGuessResult =
-        await botGuessUsecase.takeGuess(keyMap: keyboardMap);
-    final String? formattedResult = botGuessResult?.trim().toUpperCase();
-    if (formattedResult != null &&
-        formattedResult.length == WordleConstant.numberOfBox) {
-      final List<String> guessChars = formattedResult.split('');
+        await botGuessUsecase.run(keyMap: keyboardMap);
+    if (botGuessResult != null &&
+        botGuessResult.length == WordleConstant.numberOfBox) {
+      final List<String> guessChars = botGuessResult.split('');
       listBoxes[puzzleCount - 1] =
           guessChars.map((char) => Box(char: char)).toList();
       listBoxes.refresh();

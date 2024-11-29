@@ -22,7 +22,8 @@ class VoteeRepositoryImpl implements VoteeRepository {
   }) async {
     final GuessRequestBean requestBean =
         GuessRequestBean(guess: guess, size: size, seed: seed);
-    final List<GuessResponseBean> responseBean = await voteeProvider.guessRandom(requestBean);
+    final List<GuessResponseBean> responseBean =
+        await voteeProvider.guessRandom(requestBean);
     return responseBean.map((bean) => bean.toEntity()).toList();
   }
 }
