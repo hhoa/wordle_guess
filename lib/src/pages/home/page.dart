@@ -25,6 +25,7 @@ class HomePage extends GetView<HomeController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _buildSpacing(),
             _buildHeader(),
             _buildSpacing(),
             _buildPuzzle(),
@@ -32,6 +33,7 @@ class HomePage extends GetView<HomeController> {
             _buildKeyboard(),
             _buildSpacing(),
             _buildButtons(),
+            _buildSpacing(),
           ],
         ),
       ),
@@ -133,6 +135,7 @@ class HomePage extends GetView<HomeController> {
   Widget _buildBotGuessButton() {
     return Obx(
       () => WordleButton(
+        key: Key(WidgetKeys.botGuessButton.name),
         onPressed: controller.submitButtonType == ButtonType.loading
             ? null
             : controller.onBotGuess,

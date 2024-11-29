@@ -7,5 +7,5 @@ class MockGeminiRepository extends Mock implements GeminiRepositoryImpl {
   Future<String?> takeGuess({
     required Map<String, Boxes> keyMap,
   }) =>
-      Future<String?>.value('house\n');
+      Future<String?>.value('guest\n');
 }

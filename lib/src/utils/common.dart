@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 
 class WordleCommon {
@@ -7,7 +9,7 @@ class WordleCommon {
     required double spacer,
   }) {
     const double spacer = 2;
-    final double screenWidth = Get.width;
+    final double screenWidth = min(Get.width, 600);
     final double paddingSpacer = (numberOfItems - 1) * spacer;
     return (screenWidth - horizontalPadding - paddingSpacer) / numberOfItems;
   }

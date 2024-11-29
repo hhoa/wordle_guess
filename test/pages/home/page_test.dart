@@ -55,13 +55,20 @@ void main() {
       }
       return false;
     }), findsOneWidget);
+    
+    expect(find.byWidgetPredicate((widget) {
+      if (widget is Text && widget.key == Key(WidgetKeys.levelText.name)) {
+        return widget.data == '1';
+      }
+      return false;
+    }), findsOneWidget);
 
-    // press keyboard word: HOUSE
-    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-H')));
-    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-O')));
-    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-U')));
-    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-S')));
+    // press keyboard word: FEAST
+    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-F')));
     await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-E')));
+    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-A')));
+    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-S')));
+    await tester.tap(find.byKey(Key('${WidgetKeys.keyboardButton.name}-T')));
     await tester.pumpAndSettle();
     expect(find.byWidgetPredicate((widget) {
       if (widget is WordleButton &&
@@ -74,10 +81,10 @@ void main() {
     await tester.tap(find.byKey(Key(WidgetKeys.submitButton.name)));
     await tester.pumpAndSettle();
 
-    // H, O: not exist. U, S: correct, E: present
+    // F, A: not exist. S, T: correct, E: present
     expect(find.byWidgetPredicate((widget) {
       if (widget is ElevatedButton &&
-          widget.key == Key('${WidgetKeys.keyboardButton.name}-H')) {
+          widget.key == Key('${WidgetKeys.keyboardButton.name}-F')) {
         final backgroundColor =
             widget.style?.backgroundColor?.resolve(<WidgetState>{});
         return backgroundColor == BoxType.notExist.keyboardBgColor;
@@ -86,7 +93,7 @@ void main() {
     }), findsOneWidget);
     expect(find.byWidgetPredicate((widget) {
       if (widget is ElevatedButton &&
-          widget.key == Key('${WidgetKeys.keyboardButton.name}-O')) {
+          widget.key == Key('${WidgetKeys.keyboardButton.name}-A')) {
         final backgroundColor =
             widget.style?.backgroundColor?.resolve(<WidgetState>{});
         return backgroundColor == BoxType.notExist.keyboardBgColor;
@@ -96,7 +103,7 @@ void main() {
 
     expect(find.byWidgetPredicate((widget) {
       if (widget is ElevatedButton &&
-          widget.key == Key('${WidgetKeys.keyboardButton.name}-U')) {
+          widget.key == Key('${WidgetKeys.keyboardButton.name}-S')) {
         final backgroundColor =
             widget.style?.backgroundColor?.resolve(<WidgetState>{});
         return backgroundColor ==
@@ -106,7 +113,7 @@ void main() {
     }), findsOneWidget);
     expect(find.byWidgetPredicate((widget) {
       if (widget is ElevatedButton &&
-          widget.key == Key('${WidgetKeys.keyboardButton.name}-S')) {
+          widget.key == Key('${WidgetKeys.keyboardButton.name}-T')) {
         final backgroundColor =
             widget.style?.backgroundColor?.resolve(<WidgetState>{});
         return backgroundColor ==
@@ -122,6 +129,21 @@ void main() {
             widget.style?.backgroundColor?.resolve(<WidgetState>{});
         return backgroundColor ==
             BoxType.existWithIncorrectPosition.keyboardBgColor;
+      }
+      return false;
+    }), findsOneWidget);
+
+    // bot guess: GUEST which is correct word
+    await tester.tap(find.byKey(Key(WidgetKeys.botGuessButton.name)));
+    await tester.pumpAndSettle();
+
+    expect(find.text(WordleText.congrats), findsOneWidget);
+    await tester.tap(find.text(WordleText.next));
+    await tester.pumpAndSettle();
+
+    expect(find.byWidgetPredicate((widget) {
+      if (widget is Text && widget.key == Key(WidgetKeys.levelText.name)) {
+        return widget.data == '2';
       }
       return false;
     }), findsOneWidget);

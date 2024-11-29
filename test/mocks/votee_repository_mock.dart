@@ -9,15 +9,31 @@ class MockVoteeRepository extends Mock implements VoteeRepositoryImpl {
     required String guess,
     required int size,
     required int seed,
-  }) =>
-      Future<List<GuessResponse>>.value([
-        GuessResponse(slot: 0, guess: 'h', type: BoxType.notExist),
-        GuessResponse(slot: 1, guess: 'o', type: BoxType.notExist),
+  }) {
+    if (guess.toUpperCase() == 'FEAST') {
+      return Future<List<GuessResponse>>.value([
+        GuessResponse(slot: 0, guess: 'f', type: BoxType.notExist),
         GuessResponse(
-            slot: 2, guess: 'u', type: BoxType.existWithCorrectPosition),
+            slot: 1, guess: 'e', type: BoxType.existWithIncorrectPosition),
+        GuessResponse(slot: 2, guess: 'a', type: BoxType.notExist),
         GuessResponse(
             slot: 3, guess: 's', type: BoxType.existWithCorrectPosition),
         GuessResponse(
-            slot: 4, guess: 'e', type: BoxType.existWithIncorrectPosition),
+            slot: 4, guess: 't', type: BoxType.existWithCorrectPosition),
       ]);
+    } else {
+      return Future<List<GuessResponse>>.value([
+        GuessResponse(
+            slot: 0, guess: 'g', type: BoxType.existWithCorrectPosition),
+        GuessResponse(
+            slot: 1, guess: 'u', type: BoxType.existWithCorrectPosition),
+        GuessResponse(
+            slot: 2, guess: 'e', type: BoxType.existWithCorrectPosition),
+        GuessResponse(
+            slot: 3, guess: 's', type: BoxType.existWithCorrectPosition),
+        GuessResponse(
+            slot: 4, guess: 't', type: BoxType.existWithCorrectPosition),
+      ]);
+    }
+  }
 }
