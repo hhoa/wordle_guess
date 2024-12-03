@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:wordle_guess/src/enum/box.dart';
+import 'package:wordle_guess/src/enum/level.dart';
 import 'package:wordle_guess/src/enum/widget_keys.dart';
 import 'package:wordle_guess/src/pages/home/page.dart';
 import 'package:wordle_guess/src/pages/splash/controller.dart';
 import 'package:wordle_guess/src/pages/splash/page.dart';
 import 'package:wordle_guess/src/resources/strings.dart';
+import 'package:wordle_guess/src/widgets/puzzle.dart';
 import 'package:wordle_guess/src/widgets/row_puzzle.dart';
 import 'package:wordle_guess/src/widgets/wordle_button.dart';
 import 'package:wordle_guess/src/widgets/wordle_keyboard.dart';
@@ -147,5 +149,21 @@ void main() {
       }
       return false;
     }), findsOneWidget);
+  });
+
+  testWidgets('Open settings', (WidgetTester tester) async {
+    await tester.pumpWidget(mockApp);
+    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    expect(find.byType(Puzzle), findsNWidgets(Level.medium.numberOfBox));
+
+    await tester.tap(find.byKey(Key(WidgetKeys.settingButton.name)));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(Level.easy.text));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Puzzle), findsNWidgets(Level.easy.numberOfBox));
   });
 }

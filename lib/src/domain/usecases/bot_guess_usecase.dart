@@ -8,10 +8,12 @@ class BotGuessUsecase {
 
   final BotRepository _botRepository;
 
-  Future<String?> run({
+  Future<String?> run(
+    int numberOfBox, {
     required Map<String, Boxes> keyMap,
   }) async {
-    final String? guess = await _botRepository.takeGuess(keyMap: keyMap);
+    final String? guess =
+        await _botRepository.takeGuess(numberOfBox, keyMap: keyMap);
     return guess?.trim().toUpperCase();
   }
 }

@@ -14,7 +14,7 @@ class SplashPage extends GetView<SplashController> {
     final TextStyle boldStyle = WordleTypographyTheme.textStyleBold;
 
     return Scaffold(
-      backgroundColor: WordleColors.primaryColor,
+      backgroundColor: WordleColors.primaryColorMedium,
       body: SizedBox(
         width: double.infinity,
         child: Column(

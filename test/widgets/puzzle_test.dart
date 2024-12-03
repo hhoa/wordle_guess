@@ -7,9 +7,16 @@ import 'package:wordle_guess/src/widgets/puzzle.dart';
 import '../mock_app.dart';
 
 void main() {
+  const int numberOfBox = 5;
+
   testWidgets('Can render empty', (tester) async {
     final Box emptyBox = Box(char: null, type: BoxType.none);
-    final widget = createAppWidget(Puzzle(box: emptyBox));
+    final widget = createAppWidget(
+      Puzzle(
+        box: emptyBox,
+        numberOfBox: numberOfBox,
+      ),
+    );
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -23,7 +30,10 @@ void main() {
 
   testWidgets('Can render absent', (tester) async {
     final Box absentBox = Box(char: 'H', type: BoxType.notExist);
-    final widget = createAppWidget(Puzzle(box: absentBox));
+    final widget = createAppWidget(Puzzle(
+      box: absentBox,
+      numberOfBox: numberOfBox,
+    ));
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -40,7 +50,8 @@ void main() {
   testWidgets('Can render correct', (tester) async {
     final Box correctBox =
         Box(char: 'H', type: BoxType.existWithCorrectPosition);
-    final widget = createAppWidget(Puzzle(box: correctBox));
+    final widget =
+        createAppWidget(Puzzle(box: correctBox, numberOfBox: numberOfBox));
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -57,7 +68,8 @@ void main() {
   testWidgets('Can render present', (tester) async {
     final Box presentBox =
         Box(char: 'H', type: BoxType.existWithIncorrectPosition);
-    final widget = createAppWidget(Puzzle(box: presentBox));
+    final widget =
+        createAppWidget(Puzzle(box: presentBox, numberOfBox: numberOfBox));
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 

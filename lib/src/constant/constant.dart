@@ -11,8 +11,6 @@ class WordleConstant {
     SplashChar(char: 'E', color: WordleColors.shadow),
   ];
 
-  static const int numberOfBox = 5;
-
   static const double horizontalPuzzlePadding = 60;
 
   static const String delText = 'DEL';

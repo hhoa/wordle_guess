@@ -15,7 +15,8 @@ class GeminiRepositoryImpl implements BotRepository {
   final GeminiService geminiService;
 
   @override
-  Future<String?> takeGuess({
+  Future<String?> takeGuess(
+    int numberOfBox, {
     required Map<String, Boxes> keyMap,
   }) async {
     final Boxes correct = [];
@@ -43,6 +44,7 @@ class GeminiRepositoryImpl implements BotRepository {
     });
 
     return geminiService.takeGuess(
+      numberOfBox,
       correct: correct,
       present: present,
       absent: absent,

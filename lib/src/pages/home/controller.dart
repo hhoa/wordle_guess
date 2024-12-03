@@ -13,6 +13,7 @@ import '../../domain/usecases/bot_guess_usecase.dart';
 import '../../domain/usecases/get_guess_usecase.dart';
 import '../../enum/box.dart';
 import '../../enum/button.dart';
+import '../../enum/level.dart';
 import '../../model/box.dart';
 
 class HomeController extends GetxController {
@@ -26,9 +27,15 @@ class HomeController extends GetxController {
 
   final GetStorage storage = GetStorage();
 
-  final RxInt _level = 1.obs;
+  final Rx<Level> _level = Level.medium.obs;
 
-  int get level => _level.value;
+  Level get level => _level.value;
+
+  int get numberOfBox => level.numberOfBox;
+
+  final RxInt _stage = 1.obs;
+
+  int get stage => _stage.value;
 
   RxMap<String, Boxes> keyboardMap = RxMap<String, Boxes>();
 
@@ -50,13 +57,22 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
 
-    _level.value = storage.read<int>(WordlePreferenceKeys.appLatestLevel) ?? 1;
-    addDefaultRowBoxes();
+    _initVar();
+    _addDefaultRowBoxes();
   }
 
-  void addDefaultRowBoxes() {
-    listBoxes.add(List<Box>.generate(
-        WordleConstant.numberOfBox, (_) => Box(type: BoxType.none)).toList());
+  void _initVar() {
+    _stage.value = storage.read<int>(WordlePreferenceKeys.appLatestStage) ?? 1;
+    final String savedLvl =
+        storage.read<String>(WordlePreferenceKeys.appLevel) ??
+            Level.medium.text;
+    _level.value = Level.values.firstWhere((lvl) => lvl.text == savedLvl);
+  }
+
+  void _addDefaultRowBoxes() {
+    listBoxes.add(
+        List<Box>.generate(numberOfBox, (_) => Box(type: BoxType.none))
+            .toList());
     listPuzzleKey.currentState?.insertItem(puzzleCount - 1);
     if (scrollController.hasClients) {
       Future.delayed(WordleConstant.animationDuration, () {
@@ -73,7 +89,7 @@ class HomeController extends GetxController {
     final firstTimeTutorial =
         storage.read<bool>(WordlePreferenceKeys.showFirstTimeTutorial) ?? false;
     if (!firstTimeTutorial) {
-      WordleDialog.showTutorial();
+      WordleDialog.showTutorial(level, numberOfBox);
     }
   }
 
@@ -98,7 +114,7 @@ class HomeController extends GetxController {
       listBoxes.refresh();
     }
 
-    if (latestBoxes[WordleConstant.numberOfBox - 1].char != null) {
+    if (latestBoxes[numberOfBox - 1].char != null) {
       _submitButtonType.value = ButtonType.enabled;
     } else {
       _submitButtonType.value = ButtonType.disabled;
@@ -110,8 +126,8 @@ class HomeController extends GetxController {
     final String guess = latestBoxes.map((box) => box.char!).join();
     try {
       final List<GuessResponse> results = await getGuessUsecase.run(
-          guess: guess, size: WordleConstant.numberOfBox, seed: _level.value);
-      final int minLength = min(results.length, WordleConstant.numberOfBox);
+          guess: guess, size: numberOfBox, seed: _stage.value);
+      final int minLength = min(results.length, numberOfBox);
       for (int i = 0; i < minLength; i++) {
         final GuessResponse result = results[i];
         final String guess = result.guess.toUpperCase();
@@ -154,27 +170,30 @@ class HomeController extends GetxController {
           .where((box) => box.type == BoxType.existWithCorrectPosition)
           .toList()
           .length;
-      if (successfulBoxes == WordleConstant.numberOfBox) {
-        WordleDialog.showSuccessDialog(
-            correctWord: latestBoxes,
-            onNext: () {
-              _level.value = _level.value + 1;
-              storage.write(WordlePreferenceKeys.appLatestLevel, level);
-              keyboardMap.clear();
-              keyboardMap.refresh();
-              listBoxes.clear();
-              listPuzzleKey.currentState!
-                  .removeAllItems((_, __) => const SizedBox());
-              addDefaultRowBoxes();
-              Get.back();
-            });
+      if (successfulBoxes == numberOfBox) {
+        WordleDialog.showSuccessDialog(level,
+            correctWord: latestBoxes, numberOfBox: numberOfBox, onNext: () {
+          _stage.value = _stage.value + 1;
+          storage.write(WordlePreferenceKeys.appLatestStage, stage);
+          _clearMap();
+          Get.back();
+        });
       } else {
-        addDefaultRowBoxes();
+        _addDefaultRowBoxes();
       }
     } catch (e) {
       _submitButtonType.value = ButtonType.disabled;
       WordleDialog.showError(e.toString());
     }
+  }
+
+  void _clearMap() {
+    keyboardMap.clear();
+    keyboardMap.refresh();
+    listBoxes.clear();
+    listPuzzleKey.currentState!.removeAllItems((_, __) => const SizedBox());
+    _submitButtonType.value = ButtonType.disabled;
+    _addDefaultRowBoxes();
   }
 
   void onBotGuess() async {
@@ -184,9 +203,8 @@ class HomeController extends GetxController {
 
     _submitButtonType.value = ButtonType.loading;
     final String? botGuessResult =
-        await botGuessUsecase.run(keyMap: keyboardMap);
-    if (botGuessResult != null &&
-        botGuessResult.length == WordleConstant.numberOfBox) {
+        await botGuessUsecase.run(numberOfBox, keyMap: keyboardMap);
+    if (botGuessResult != null && botGuessResult.length == numberOfBox) {
       final List<String> guessChars = botGuessResult.split('');
       listBoxes[puzzleCount - 1] =
           guessChars.map((char) => Box(char: char)).toList();
@@ -196,5 +214,12 @@ class HomeController extends GetxController {
       _submitButtonType.value = ButtonType.disabled;
       WordleDialog.showError(WordleText.botHasError);
     }
+  }
+
+  void updateLevel(Level newLevel) {
+    _level.value = newLevel;
+    storage.write(WordlePreferenceKeys.appLevel, newLevel.text);
+    _clearMap();
+    update();
   }
 }

@@ -15,13 +15,16 @@ void main() {
         Box(char: 'H', type: BoxType.existWithCorrectPosition);
     final Box presentBox =
         Box(char: 'H', type: BoxType.existWithIncorrectPosition);
-    final widget = createAppWidget(RowPuzzle(boxes: [
-      absentBox,
-      correctBox,
-      presentBox,
-      emptyBox,
-      emptyBox,
-    ]));
+    final widget = createAppWidget(RowPuzzle(
+      boxes: [
+        absentBox,
+        correctBox,
+        presentBox,
+        emptyBox,
+        emptyBox,
+      ],
+      numberOfBox: 5,
+    ));
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 

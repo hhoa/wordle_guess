@@ -2,5 +2,6 @@ enum WidgetKeys {
   submitButton,
   botGuessButton,
   keyboardButton,
-  levelText
+  levelText,
+  settingButton,
 }

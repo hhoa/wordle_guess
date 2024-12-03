@@ -20,12 +20,11 @@ class GeminiService extends BotService {
   }
 
   @override
-  Future<String?> takeGuess(
+  Future<String?> takeGuess(int numberOfBox,
       {required Boxes correct,
       required List<String> present,
       required List<String> absent}) async {
-    const String suggestPrompt =
-        'Suggest a ${WordleConstant.numberOfBox}-letter word';
+    final String suggestPrompt = 'Suggest a $numberOfBox-letter word';
     String conditionPrompt = '';
     if (correct.isNotEmpty || present.isNotEmpty || absent.isNotEmpty) {
       conditionPrompt += ' where: ';

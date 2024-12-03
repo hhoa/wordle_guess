@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle_guess/src/enum/level.dart';
 
 import '../../../enum/button.dart';
 import '../../../enum/widget_keys.dart';
-import '../../../resources/colors.dart';
 import '../../../resources/strings.dart';
 import '../../../widgets/circular_loading.dart';
 import '../controller.dart';
@@ -28,7 +28,7 @@ class SubmitButton extends GetView<HomeController> {
           onPressed: controller.submitButtonType == ButtonType.enabled
               ? controller.onSubmitted
               : null,
-          bgColor: WordleColors.blue,
+          bgColor: controller.level.submitButtonColor,
           child: isLoading ? const WordleCircularLoading() : null,
         ),
       );

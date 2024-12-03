@@ -9,14 +9,15 @@ import '../resources/typography.dart';
 import '../utils/common.dart';
 
 class Puzzle extends GetView {
-  const Puzzle({required this.box, super.key});
+  const Puzzle({required this.box, required this.numberOfBox, super.key});
 
   final Box box;
+  final int numberOfBox;
 
   @override
   Widget build(BuildContext context) {
     final double boxWidth = WordleCommon.calculateWidth(
-        numberOfItems: WordleConstant.numberOfBox,
+        numberOfItems: numberOfBox,
         horizontalPadding: WordleConstant.horizontalPuzzlePadding,
         spacer: 8);
 

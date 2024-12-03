@@ -16,15 +16,16 @@ void main() {
 
   group('BotGuessUsecase', () {
     test('run', () async {
+      const int numberOfBox = 5;
       const String guess = 'HOUSE';
       final Map<String, Boxes> keyMap = {
         'h': [Box(char: 'h', slot: 0, type: BoxType.notExist)]
       };
-      when(() => botRepository.takeGuess(keyMap: keyMap))
+      when(() => botRepository.takeGuess(numberOfBox, keyMap: keyMap))
           .thenAnswer((_) => Future<String?>.value(guess));
       final BotGuessUsecase uc = BotGuessUsecase(botRepository);
-      final String? actual = await uc.run(keyMap: keyMap);
-      expect(actual?.length, 5);
+      final String? actual = await uc.run(numberOfBox, keyMap: keyMap);
+      expect(actual?.length, numberOfBox);
       expect(actual, guess);
     });
   });

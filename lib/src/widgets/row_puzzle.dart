@@ -7,10 +7,12 @@ import 'puzzle.dart';
 class RowPuzzle extends GetView {
   const RowPuzzle({
     required this.boxes,
+    required this.numberOfBox,
     super.key,
   });
 
   final List<Box> boxes;
+  final int numberOfBox;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,12 @@ class RowPuzzle extends GetView {
     return Wrap(
       spacing: horizontalSpacer,
       alignment: WrapAlignment.center,
-      children: boxes.map((box) => Puzzle(box: box)).toList(),
+      children: boxes
+          .map((box) => Puzzle(
+                box: box,
+                numberOfBox: numberOfBox,
+              ))
+          .toList(),
     );
   }
 }
